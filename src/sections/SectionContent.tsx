@@ -3,6 +3,7 @@ import type { TopicId } from '../data/training'
 import { ModelsSection, RulesSection } from './AgentSections'
 import AiLandscapeSection from './AiLandscapeSection'
 import ArchitectureSection from './ArchitectureSection'
+import AssistantChatSection from './AssistantChatSection'
 import CapstoneSection from './CapstoneSection'
 import DevelopmentAreasSection from './DevelopmentAreasSection'
 import FailureModesSection from './FailureModesSection'
@@ -21,6 +22,7 @@ const sections = {
   inicio: WelcomeSection,
   abertura: OpeningSection,
   prompts: PromptsSection,
+  assistente: AssistantChatSection,
   modelos: ModelsSection,
   regras: RulesSection,
   fluxo: WorkflowSection,

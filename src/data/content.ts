@@ -2,6 +2,7 @@
 export const sectionCopy = {
   abertura: { eyebrow: 'Ponto de partida', title: 'IA acelera tarefas.', emphasis: 'Responsabilidade não.', lead: 'O agente pode escrever, explicar e sugerir. A pessoa desenvolvedora continua responsável por entender o problema, validar a solução e decidir o que entra no projeto.' },
   prompts: { eyebrow: 'Como pedir bem', title: 'Um bom prompt diminui', emphasis: 'a adivinhação.', lead: 'Pedidos vagos costumam gerar respostas genéricas. Dê ao agente um problema com bordas claras.' },
+  assistente: { eyebrow: 'Conversa guiada', title: 'Pergunte, mas', emphasis: 'mantenha o critério.', lead: 'A IA pode explicar, sugerir caminhos e ajudar a organizar uma investigação. A verificação técnica e a decisão continuam sendo humanas.' },
   modelos: { eyebrow: 'Capacidade × escopo × custo', title: 'Escolha o agente pelo', emphasis: 'tipo de decisão.', lead: 'O nome do modelo indica uma família, mas a versão e o esforço de raciocínio também mudam o resultado. Comece pelo agente mais leve que atende ao nível de risco da tarefa.' },
   regras: { eyebrow: 'Contexto persistente do repositório', title: 'Arquivos Markdown dão', emphasis: 'limites ao agente.', lead: '' },
   revisao: { eyebrow: 'Segunda opinião', title: 'IA revisa junto.', emphasis: 'Não aprova sozinha.', lead: 'Use o agente como um par extra de olhos; a revisão final ainda exige contexto do produto e do time.' },

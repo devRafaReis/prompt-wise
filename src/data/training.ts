@@ -3,7 +3,7 @@ import frontendRulesUrl from '../../examples/AGENTS.frontend.example.md?url'
 
 export { frontendRulesExample, frontendRulesUrl }
 
-export type TopicId = 'inicio' | 'abertura' | 'prompts' | 'modelos' | 'regras' | 'fluxo' | 'revisao' | 'tokens' | 'mapa' | 'rag' | 'embeddings' | 'mcp' | 'contexto' | 'arquitetura' | 'frentes' | 'aplicacao' | 'tecnicas' | 'aprovacao' | 'avaliacao' | 'incerteza' | 'falhas' | 'observabilidade' | 'governanca' | 'adequacao' | 'seguranca' | 'caso-final' | 'bastidores' | 'fechamento'
+export type TopicId = 'inicio' | 'abertura' | 'prompts' | 'assistente' | 'modelos' | 'regras' | 'fluxo' | 'revisao' | 'tokens' | 'mapa' | 'rag' | 'embeddings' | 'mcp' | 'contexto' | 'arquitetura' | 'frentes' | 'aplicacao' | 'tecnicas' | 'aprovacao' | 'avaliacao' | 'incerteza' | 'falhas' | 'observabilidade' | 'governanca' | 'adequacao' | 'seguranca' | 'caso-final' | 'bastidores' | 'fechamento'
 
 export type Topic = {
   id: TopicId
@@ -16,6 +16,7 @@ export const topics: Topic[] = [
   { id: 'inicio', title: 'Boas-vindas', eyebrow: 'Guia prático', description: 'Visão geral e objetivos da sessão.' },
   { id: 'abertura', title: 'Abertura', eyebrow: '01 · Abertura', description: 'A IA acelera, mas a responsabilidade técnica continua sua.' },
   { id: 'prompts', title: 'Prompts precisos', eyebrow: '02 · Como pedir bem', description: 'Mais contexto útil, menos adivinhação.' },
+  { id: 'assistente', title: 'Pergunte à IA', eyebrow: 'Conversa guiada', description: 'Converse sobre desenvolvimento com limites claros.' },
   { id: 'modelos', title: 'Agentes e versões', eyebrow: '03 · Escolha consciente', description: 'Capacidade, custo, velocidade e contexto orientam a escolha.' },
   { id: 'regras', title: 'Regras em Markdown', eyebrow: '04 · Contexto do projeto', description: 'Instruções locais que orientam o agente no repositório.' },
   { id: 'fluxo', title: 'Do pedido ao PR', eyebrow: '05 · Trabalho com evidências', description: 'Investigue, altere e valide uma mudança com IA.' },
@@ -44,7 +45,7 @@ export const topics: Topic[] = [
 ]
 
 export const topicGroups = [
-  { id: 'fundamentos', title: 'Fundamentos', topicIds: ['abertura', 'prompts', 'modelos', 'regras', 'fluxo', 'revisao', 'tokens'] },
+  { id: 'fundamentos', title: 'Fundamentos', topicIds: ['abertura', 'prompts', 'assistente', 'modelos', 'regras', 'fluxo', 'revisao', 'tokens'] },
   { id: 'arquiteturas', title: 'Arquiteturas e ferramentas', topicIds: ['mapa', 'rag', 'embeddings', 'mcp', 'contexto', 'arquitetura', 'frentes', 'tecnicas', 'aprovacao'] },
   { id: 'qualidade', title: 'Qualidade e responsabilidade', topicIds: ['avaliacao', 'incerteza', 'falhas', 'observabilidade', 'governanca', 'adequacao', 'seguranca'] },
   { id: 'pratica', title: 'Prática aplicada', topicIds: ['aplicacao', 'caso-final'] },

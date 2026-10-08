@@ -2,6 +2,7 @@ import { Icon, Insight, Detail, PromptBox } from '../components/GuideUI'
 import SectionHeading from '../components/SectionHeading'
 import { craftSteps, openingInsights } from '../data/content'
 import { loginPrompt } from '../data/training'
+import PromptRefiner from '../components/PromptRefiner'
 
 export function WelcomeSection() {
   return <section className="welcome">
@@ -25,5 +26,6 @@ export function PromptsSection() {
     <SectionHeading id="prompts" />
     <div className="craft"><div className="craft-title"><span>CRAFT</span><p>Uma estrutura simples para pedidos com intenção.</p></div><div className="craft-list">{craftSteps.map(({ letter, title, description }) => <div key={letter}><b>{letter}</b><strong>{title}</strong><span>{description}</span></div>)}</div></div>
     <div className="compare"><div className="bad"><small>Prompt vago</small><p>“Faça uma tela de login em React.”</p></div><div className="good"><small>Prompt com CRAFT</small><p>Contexto, critérios de validação, acessibilidade, estados e restrições explícitos.</p><Detail title="Ver prompt completo"><PromptBox onCopy={loginPrompt}>{loginPrompt}</PromptBox></Detail></div></div>
+    <PromptRefiner />
   </section>
 }

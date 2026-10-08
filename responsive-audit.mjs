@@ -81,11 +81,11 @@ class CdpClient {
 }
 
 const topicIds = [
-  'inicio', 'abertura', 'prompts', 'modelos', 'regras', 'fluxo', 'revisao', 'tokens',
+  'inicio', 'abertura', 'prompts', 'assistente', 'modelos', 'regras', 'fluxo', 'revisao', 'tokens',
   'mapa', 'rag', 'embeddings', 'mcp', 'contexto', 'arquitetura', 'frentes', 'tecnicas', 'aprovacao',
   'avaliacao', 'incerteza', 'falhas', 'observabilidade', 'governanca', 'adequacao', 'seguranca', 'aplicacao', 'caso-final', 'bastidores', 'fechamento',
 ]
-const groupCounts = { fundamentos: 7, arquiteturas: 9, qualidade: 7, pratica: 2, encerramento: 2 }
+const groupCounts = { fundamentos: 8, arquiteturas: 9, qualidade: 7, pratica: 2, encerramento: 2 }
 const viewports = [
   { width: 320, height: 700, label: 'celular 320' },
   { width: 339, height: 760, label: 'celular 339' },
@@ -94,6 +94,8 @@ const viewports = [
 ]
 
 const interactionChecks = [
+  ['prompts', `(async () => { window.fetch = async () => new Response(JSON.stringify({ feedback: { resumo: 'Resumo ilustrativo.', perguntas: ['Qual arquivo será alterado?'], promptSugerido: 'Crie um componente React.', cuidado: 'Revise a sugestão antes de usar.' } }), { headers: { 'content-type': 'application/json' } }); const textarea = document.querySelector('#prompt-to-refine'); const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set; setter.call(textarea, 'Crie um componente React para o projeto e explique em tabela.'); textarea.dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('.prompt-refiner-analyze')?.click(); await new Promise(resolve => setTimeout(resolve, 80)) })()`, `Boolean(document.querySelector('.prompt-check-list')) && Boolean(document.querySelector('.prompt-agent-feedback'))`],
+  ['assistente', `(async () => { window.fetch = async () => new Response(JSON.stringify({ answer: 'Resposta ilustrativa para a conversa.' }), { headers: { 'content-type': 'application/json' } }); const textarea = document.querySelector('#assistant-chat-input'); const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set; setter.call(textarea, 'Como revisar uma mudança?'); textarea.dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('.assistant-chat-form')?.requestSubmit(); await new Promise(resolve => setTimeout(resolve, 80)) })()`, `document.querySelectorAll('.assistant-chat-message').length === 2 && Boolean(document.querySelector('.assistant-chat-message.assistant'))`],
   ['fluxo', `(() => { const cases = document.querySelectorAll('.workflow-case-tabs button'); cases[cases.length - 1]?.click(); const phases = document.querySelectorAll('.workflow-phases button'); phases[phases.length - 1]?.click() })()`, `document.querySelectorAll('.workflow-case-tabs .selected').length === 1 && document.querySelectorAll('.workflow-phases .selected').length === 1`],
   ['tokens', `(() => { const textarea = document.querySelector('#token-prompt'); const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set; setter.call(textarea, 'Explique o erro de validação.'); textarea.dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('.generate-button')?.click() })()`, `Boolean(document.querySelector('.response-preview')?.textContent) && Boolean(document.querySelector('.token-more .detail[open]')) && (() => { const detail = document.querySelector('.token-section > .detail'); const lab = document.querySelector('.token-playground'); return Boolean(detail && lab && lab.getBoundingClientRect().top - detail.getBoundingClientRect().bottom >= 16) })()`],
   ['mapa', `(() => { const scenarios = document.querySelectorAll('.decision-scenarios button'); scenarios[scenarios.length - 1]?.click(); document.querySelector('.decision-options button')?.click() })()`, `Boolean(document.querySelector('.decision-feedback'))`],
