@@ -27,7 +27,7 @@ export const projectCreationEstimate = {
     value: '≈ 366 mil–610 mil tokens',
     detail: 'Faixa de ordem de grandeza para toda a criação e as revisões, somando entradas e saídas.',
   },
-  baseline: 'Nesta versão, 75 arquivos textuais de código, conteúdo e exemplos somam cerca de 492 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 123 mil tokens.',
+  baseline: 'Nesta versão, 75 arquivos textuais de código, conteúdo e exemplos somam cerca de 494 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 123 mil tokens.',
   expansion: 'A faixa total aplica aproximadamente três a cinco vezes essa base para representar releituras de contexto, instruções, mensagens, diffs, resultados de busca, builds e respostas produzidas durante as iterações.',
   caveat: 'O consumo real só pode ser confirmado pelos registros de uso da plataforma. Tokenização varia por modelo e conteúdo; arquivos lidos repetidamente e saídas de ferramentas também participam do contexto.',
 } as const
@@ -252,6 +252,17 @@ export const projectStories: ProjectStory[] = [
     after: 'As rotas aceitam Request Web ou request/response do Vite, extraem cabeçalhos e corpo conforme o formato recebido e expõem o método POST além do handler padrão.',
     verify: 'Publicar, enviar uma pergunta e conferir que a Function devolve uma resposta HTTP controlada; confirmar no painel a chamada externa quando o pedido é válido.',
     lesson: 'Ao integrar um runtime gerenciado, testar o contrato de entrada implantado é tão importante quanto validar a lógica do endpoint.',
+    files: ['api/conversar.ts', 'api/refinar-prompt.ts', 'src/data/projectStory.ts'],
+  },
+  {
+    id: 'web-handler-context',
+    title: 'Distinguir contexto e resposta',
+    subtitle: 'Segundo argumento Web',
+    request: 'Resolver uma invocação que ainda falhava imediatamente em produção.',
+    before: 'O segundo argumento recebido pelo Web Handler podia ser um contexto de execução, mas era tratado como o objeto response do runtime Node.',
+    after: 'A rota verifica os métodos da resposta antes de usá-la; quando recebe contexto Web, devolve uma Response padrão com o mesmo status e corpo JSON.',
+    verify: 'Publicar e testar uma pergunta válida; a execução deve ultrapassar a validação inicial e registrar a chamada externa somente quando apropriado.',
+    lesson: 'Compatibilidade de assinatura também exige validar o significado dos argumentos opcionais, não apenas sua presença.',
     files: ['api/conversar.ts', 'api/refinar-prompt.ts', 'src/data/projectStory.ts'],
   },
 ]

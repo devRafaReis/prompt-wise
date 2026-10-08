@@ -29,8 +29,15 @@ type VercelResponse = {
   json(body: unknown): void
 }
 
-function sendJson(response: VercelResponse | undefined, status: number, body: unknown) {
-  if (!response) {
+function isVercelResponse(value: unknown): value is VercelResponse {
+  return Boolean(value)
+    && typeof (value as VercelResponse).setHeader === 'function'
+    && typeof (value as VercelResponse).status === 'function'
+    && typeof (value as VercelResponse).json === 'function'
+}
+
+function sendJson(response: unknown, status: number, body: unknown) {
+  if (!isVercelResponse(response)) {
     return new Response(JSON.stringify(body), {
       status,
       headers: {
@@ -69,7 +76,7 @@ function isPromptAgentFeedback(value: unknown): value is PromptAgentFeedback {
     && feedback.perguntas.every(question => typeof question === 'string')
 }
 
-async function handler(request: VercelRequest | Request, response?: VercelResponse) {
+async function handler(request: VercelRequest | Request, response?: unknown) {
   const json = (status: number, body: unknown) => sendJson(response, status, body)
   if (request.method !== 'POST') {
     return json(405, { error: 'Método não permitido.' })
