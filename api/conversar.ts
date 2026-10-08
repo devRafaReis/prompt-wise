@@ -19,10 +19,34 @@ type VercelResponse = {
   json(body: unknown): void
 }
 
-function sendJson(response: VercelResponse, status: number, body: unknown) {
+function sendJson(response: VercelResponse | undefined, status: number, body: unknown) {
+  if (!response) {
+    return new Response(JSON.stringify(body), {
+      status,
+      headers: {
+        'Cache-Control': 'no-store',
+        'Content-Type': 'application/json; charset=utf-8',
+        'X-Content-Type-Options': 'nosniff',
+      },
+    })
+  }
   response.setHeader('Cache-Control', 'no-store')
   response.setHeader('X-Content-Type-Options', 'nosniff')
   return response.status(status).json(body)
+}
+
+function contentTypeOf(request: VercelRequest | Request) {
+  const headers = request.headers as unknown
+  if (headers && typeof (headers as { get?: unknown }).get === 'function') {
+    return (headers as { get(name: string): string | null }).get('content-type') ?? ''
+  }
+  const contentType = (headers as Record<string, string | string[] | undefined>)['content-type']
+  return Array.isArray(contentType) ? contentType[0] ?? '' : contentType ?? ''
+}
+
+async function bodyOf(request: VercelRequest | Request) {
+  if ('json' in request && typeof request.json === 'function') return request.json()
+  return request.body ?? {}
 }
 
 function isChatMessage(value: unknown): value is ChatMessage {
@@ -34,14 +58,14 @@ function isChatMessage(value: unknown): value is ChatMessage {
     && message.content.length <= maxMessageLength
 }
 
-export default async function handler(request: VercelRequest, response: VercelResponse) {
+async function handler(request: VercelRequest | Request, response?: VercelResponse) {
   const json = (status: number, body: unknown) => sendJson(response, status, body)
   if (request.method !== 'POST') return json(405, { error: 'Método não permitido.' })
-  if (!((Array.isArray(request.headers['content-type']) ? request.headers['content-type'][0] : request.headers['content-type']) ?? '').includes('application/json')) return json(415, { error: 'Envie a mensagem em JSON.' })
+  if (!contentTypeOf(request).includes('application/json')) return json(415, { error: 'Envie a mensagem em JSON.' })
 
   let body: { message?: unknown; history?: unknown }
   try {
-    body = (request.body ?? {}) as { message?: unknown; history?: unknown }
+    body = await bodyOf(request) as { message?: unknown; history?: unknown }
   } catch {
     return json(400, { error: 'O corpo da requisição não é um JSON válido.' })
   }
@@ -91,3 +115,6 @@ export default async function handler(request: VercelRequest, response: VercelRe
     return json(502, { error: 'Não foi possível conectar ao assistente agora. Tente novamente em instantes.' })
   }
 }
+
+export { handler as POST }
+export default handler

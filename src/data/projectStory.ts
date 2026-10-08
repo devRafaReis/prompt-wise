@@ -27,7 +27,7 @@ export const projectCreationEstimate = {
     value: '≈ 366 mil–610 mil tokens',
     detail: 'Faixa de ordem de grandeza para toda a criação e as revisões, somando entradas e saídas.',
   },
-  baseline: 'Nesta versão, 75 arquivos textuais de código, conteúdo e exemplos somam cerca de 490 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 122 mil tokens.',
+  baseline: 'Nesta versão, 75 arquivos textuais de código, conteúdo e exemplos somam cerca de 492 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 123 mil tokens.',
   expansion: 'A faixa total aplica aproximadamente três a cinco vezes essa base para representar releituras de contexto, instruções, mensagens, diffs, resultados de busca, builds e respostas produzidas durante as iterações.',
   caveat: 'O consumo real só pode ser confirmado pelos registros de uso da plataforma. Tokenização varia por modelo e conteúdo; arquivos lidos repetidamente e saídas de ferramentas também participam do contexto.',
 } as const
@@ -241,6 +241,17 @@ export const projectStories: ProjectStory[] = [
     after: 'Chat e refinador passaram a exportar handler(request, response), ler o corpo já processado pelo Vercel e responder com status e JSON pelo objeto response.',
     verify: 'Publicar um novo deployment, testar o chat e o refinador e confirmar no painel que a chamada externa só ocorre depois de a Function aceitar o pedido.',
     lesson: 'A documentação do runtime geral e a integração de um framework podem ter contratos distintos; para rotas de Vite, a referência do framework é decisiva.',
+    files: ['api/conversar.ts', 'api/refinar-prompt.ts', 'src/data/projectStory.ts'],
+  },
+  {
+    id: 'function-runtime-compatibility',
+    title: 'Compatibilizar adaptadores da Function',
+    subtitle: 'Vite e Web Handler',
+    request: 'Eliminar uma falha persistente de invocação no deployment, sem a chamada chegar ao provedor de IA.',
+    before: 'A rota dependia de apenas uma assinatura de entrada, embora o projeto pudesse ser executado pelo adaptador Vite ou pelo Web Handler da plataforma.',
+    after: 'As rotas aceitam Request Web ou request/response do Vite, extraem cabeçalhos e corpo conforme o formato recebido e expõem o método POST além do handler padrão.',
+    verify: 'Publicar, enviar uma pergunta e conferir que a Function devolve uma resposta HTTP controlada; confirmar no painel a chamada externa quando o pedido é válido.',
+    lesson: 'Ao integrar um runtime gerenciado, testar o contrato de entrada implantado é tão importante quanto validar a lógica do endpoint.',
     files: ['api/conversar.ts', 'api/refinar-prompt.ts', 'src/data/projectStory.ts'],
   },
 ]
