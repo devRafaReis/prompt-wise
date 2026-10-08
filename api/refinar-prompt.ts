@@ -1,4 +1,5 @@
 import type { PromptAgentFeedback } from '../src/data/promptRefiner'
+import { extractResponseText } from './_response-text'
 
 declare const process: { env: Record<string, string | undefined> }
 
@@ -99,13 +100,14 @@ export default {
       return json(502, { error: 'Não foi possível obter uma resposta do assistente agora.' })
     }
 
-    const result = await openaiResponse.json() as { output_text?: unknown }
-    if (typeof result.output_text !== 'string') {
+    const result = await openaiResponse.json() as unknown
+    const outputText = extractResponseText(result)
+    if (!outputText) {
       console.error('A OpenAI não retornou texto estruturado.')
       return json(502, { error: 'O assistente retornou uma resposta em formato inesperado.' })
     }
 
-    const feedback = JSON.parse(result.output_text) as unknown
+    const feedback = JSON.parse(outputText) as unknown
     if (!isPromptAgentFeedback(feedback)) {
       console.error('A resposta da OpenAI não passou na validação do contrato.')
       return json(502, { error: 'O assistente retornou uma resposta incompleta.' })

@@ -1,5 +1,7 @@
 declare const process: { env: Record<string, string | undefined> }
 
+import { extractResponseText } from './_response-text'
+
 type ChatMessage = { role: 'user' | 'assistant'; content: string }
 
 const maxMessageLength = 3_000
@@ -70,12 +72,13 @@ export default {
       return json(502, { error: 'Não foi possível obter uma resposta do assistente agora.' })
     }
 
-    const result = await openaiResponse.json() as { output_text?: unknown }
-    if (typeof result.output_text !== 'string' || !result.output_text.trim()) {
+    const result = await openaiResponse.json() as unknown
+    const answer = extractResponseText(result)
+    if (!answer) {
       console.error('A OpenAI não retornou texto para o chat.')
       return json(502, { error: 'O assistente não retornou uma resposta válida.' })
     }
-    return json(200, { answer: result.output_text.trim() })
+    return json(200, { answer })
   } catch (error) {
     console.error('Erro ao consultar o chat.', error instanceof Error ? error.message : 'erro desconhecido')
     return json(502, { error: 'Não foi possível conectar ao assistente agora. Tente novamente em instantes.' })

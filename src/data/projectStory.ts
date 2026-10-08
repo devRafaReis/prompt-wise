@@ -24,10 +24,10 @@ export const projectCreationEstimate = {
   },
   tokens: {
     label: 'Uso total estimado',
-    value: '≈ 363 mil–605 mil tokens',
+    value: '≈ 366 mil–610 mil tokens',
     detail: 'Faixa de ordem de grandeza para toda a criação e as revisões, somando entradas e saídas.',
   },
-  baseline: 'Nesta versão, 74 arquivos textuais de código, conteúdo e exemplos somam cerca de 485 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 121 mil tokens.',
+  baseline: 'Nesta versão, 75 arquivos textuais de código, conteúdo e exemplos somam cerca de 488 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 122 mil tokens.',
   expansion: 'A faixa total aplica aproximadamente três a cinco vezes essa base para representar releituras de contexto, instruções, mensagens, diffs, resultados de busca, builds e respostas produzidas durante as iterações.',
   caveat: 'O consumo real só pode ser confirmado pelos registros de uso da plataforma. Tokenização varia por modelo e conteúdo; arquivos lidos repetidamente e saídas de ferramentas também participam do contexto.',
 } as const
@@ -220,5 +220,16 @@ export const projectStories: ProjectStory[] = [
     verify: 'Executar o build, publicar um novo deployment, testar GET para confirmar que a rota responde 405 e enviar uma pergunta; em caso de falha da API, conferir o status registrado nos Function Logs sem expor a chave.',
     lesson: 'Um endpoint pode compilar localmente e ainda falhar em produção quando o contrato de exportação do runtime de hospedagem não é respeitado.',
     files: ['api/conversar.ts', 'api/refinar-prompt.ts', 'src/data/projectStory.ts'],
+  },
+  {
+    id: 'responses-output-parser',
+    title: 'Ler a resposta REST corretamente',
+    subtitle: 'Texto dentro de output',
+    request: 'Corrigir a resposta 502 em que a Function alcançava a API, mas dizia que o assistente não retornou texto válido.',
+    before: 'As rotas usavam `output_text`, um atalho disponibilizado pelo SDK, ao ler o JSON bruto retornado pelo endpoint REST.',
+    after: 'Um utilitário privado extrai os blocos `output_text` de `output[].content[]`, formato da Responses API, e é reutilizado pelo chat e pelo refinador estruturado.',
+    verify: 'Publicar a correção, enviar uma pergunta simples e conferir a resposta no chat; testar também o refinador. Se a API recusar a chamada, confirmar que o servidor devolve um erro controlado sem expor resposta bruta, chave ou conteúdo do usuário.',
+    lesson: 'O contrato HTTP bruto e as conveniências de um SDK não são intercambiáveis; validar o formato real da resposta evita que uma geração bem-sucedida pareça uma falha da aplicação.',
+    files: ['api/_response-text.ts', 'api/conversar.ts', 'api/refinar-prompt.ts'],
   },
 ]
