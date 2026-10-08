@@ -1,9 +1,24 @@
 import type { PromptAgentFeedback } from '../src/data/promptRefiner'
-import { extractResponseText } from '../src/lib/responseText'
-
 declare const process: { env: Record<string, string | undefined> }
 
 const maxPromptLength = 6_000
+
+function extractResponseText(value: unknown) {
+  if (!value || typeof value !== 'object') return null
+  const output = (value as { output?: unknown }).output
+  if (!Array.isArray(output)) return null
+
+  const text = output
+    .filter((item): item is { type?: unknown; content?: unknown } => Boolean(item && typeof item === 'object'))
+    .filter(item => item.type === 'message' && Array.isArray(item.content))
+    .flatMap(item => item.content as Array<{ type?: unknown; text?: unknown }>)
+    .filter((item): item is { type: 'output_text'; text: string } => item.type === 'output_text' && typeof item.text === 'string')
+    .map(item => item.text.trim())
+    .filter(Boolean)
+    .join('\n')
+
+  return text || null
+}
 
 const responseSchema = {
   type: 'object',

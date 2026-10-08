@@ -27,7 +27,7 @@ export const projectCreationEstimate = {
     value: '≈ 366 mil–610 mil tokens',
     detail: 'Faixa de ordem de grandeza para toda a criação e as revisões, somando entradas e saídas.',
   },
-  baseline: 'Nesta versão, 75 arquivos textuais de código, conteúdo e exemplos somam cerca de 495 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 124 mil tokens.',
+  baseline: 'Nesta versão, 74 arquivos textuais de código, conteúdo e exemplos somam cerca de 495 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 124 mil tokens.',
   expansion: 'A faixa total aplica aproximadamente três a cinco vezes essa base para representar releituras de contexto, instruções, mensagens, diffs, resultados de busca, builds e respostas produzidas durante as iterações.',
   caveat: 'O consumo real só pode ser confirmado pelos registros de uso da plataforma. Tokenização varia por modelo e conteúdo; arquivos lidos repetidamente e saídas de ferramentas também participam do contexto.',
 } as const
@@ -230,7 +230,7 @@ export const projectStories: ProjectStory[] = [
     after: 'Um utilitário privado extrai os blocos `output_text` de `output[].content[]`, formato da Responses API, e é reutilizado pelo chat e pelo refinador estruturado.',
     verify: 'Publicar a correção, enviar uma pergunta simples e conferir a resposta no chat; testar também o refinador. Se a API recusar a chamada, confirmar que o servidor devolve um erro controlado sem expor resposta bruta, chave ou conteúdo do usuário.',
     lesson: 'O contrato HTTP bruto e as conveniências de um SDK não são intercambiáveis; validar o formato real da resposta evita que uma geração bem-sucedida pareça uma falha da aplicação.',
-    files: ['src/lib/responseText.ts', 'api/conversar.ts', 'api/refinar-prompt.ts'],
+    files: ['api/conversar.ts', 'api/refinar-prompt.ts'],
   },
   {
     id: 'vite-function-handler',
@@ -271,9 +271,9 @@ export const projectStories: ProjectStory[] = [
     subtitle: 'Importação da Function',
     request: 'Corrigir o erro ERR_MODULE_NOT_FOUND ao iniciar a Function na Vercel.',
     before: 'O extrator de texto ficava em api/_response-text.ts; arquivos com esse prefixo são ignorados pela Vercel e não entraram no bundle da rota.',
-    after: 'O utilitário foi movido para src/lib/responseText.ts e é importado pelas duas Functions como dependência normal do bundle.',
+    after: 'O extrator passou a ficar diretamente em cada Function, sem importação local que o builder possa omitir.',
     verify: 'Publicar e confirmar nos logs que a Function inicia sem ERR_MODULE_NOT_FOUND antes de testar a chamada à OpenAI.',
-    lesson: 'Um arquivo ignorado como endpoint não é necessariamente incluído como módulo auxiliar; código compartilhado deve ficar fora da pasta de rotas.',
-    files: ['src/lib/responseText.ts', 'api/conversar.ts', 'api/refinar-prompt.ts'],
+    lesson: 'Em um bundle de Function que não rastreia módulos locais, uma dependência pequena pode precisar ficar no próprio arquivo executado.',
+    files: ['api/conversar.ts', 'api/refinar-prompt.ts'],
   },
 ]
