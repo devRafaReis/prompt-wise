@@ -25,7 +25,8 @@ function isChatMessage(value: unknown): value is ChatMessage {
     && message.content.length <= maxMessageLength
 }
 
-export default async function handler(request: Request) {
+export default {
+  async fetch(request: Request) {
   if (request.method !== 'POST') return json(405, { error: 'Método não permitido.' })
   if (!(request.headers.get('content-type') ?? '').includes('application/json')) return json(415, { error: 'Envie a mensagem em JSON.' })
 
@@ -79,4 +80,5 @@ export default async function handler(request: Request) {
     console.error('Erro ao consultar o chat.', error instanceof Error ? error.message : 'erro desconhecido')
     return json(502, { error: 'Não foi possível conectar ao assistente agora. Tente novamente em instantes.' })
   }
+  },
 }

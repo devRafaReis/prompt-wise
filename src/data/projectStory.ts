@@ -210,4 +210,15 @@ export const projectStories: ProjectStory[] = [
     lesson: 'Uma conversa útil precisa explicitar escopo, memória, envio de dados e limites de custo; um campo de texto sozinho não cria um chat responsável.',
     files: ['src/data/assistantChat.ts', 'src/components/AssistantChat.tsx', 'src/sections/AssistantChatSection.tsx', 'api/conversar.ts', 'src/data/training.ts'],
   },
+  {
+    id: 'vercel-function-signature',
+    title: 'Corrigir a assinatura da Function',
+    subtitle: 'Erro de invocação em produção',
+    request: 'Investigar o erro FUNCTION_INVOCATION_FAILED ao publicar a conversa na Vercel.',
+    before: 'As rotas em `api/` usavam uma função padrão com a assinatura de Web Request, que não corresponde ao export esperado pelo runtime usado no projeto Vite.',
+    after: 'As duas rotas passaram a exportar o objeto com o método `fetch(request)`, assinatura compatível com as Vercel Functions de Web Standard; erros da API continuam tratados como respostas controladas.',
+    verify: 'Executar o build, publicar um novo deployment, testar GET para confirmar que a rota responde 405 e enviar uma pergunta; em caso de falha da API, conferir o status registrado nos Function Logs sem expor a chave.',
+    lesson: 'Um endpoint pode compilar localmente e ainda falhar em produção quando o contrato de exportação do runtime de hospedagem não é respeitado.',
+    files: ['api/conversar.ts', 'api/refinar-prompt.ts', 'src/data/projectStory.ts'],
+  },
 ]

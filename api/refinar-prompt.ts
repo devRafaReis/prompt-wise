@@ -37,7 +37,8 @@ function isPromptAgentFeedback(value: unknown): value is PromptAgentFeedback {
     && feedback.perguntas.every(question => typeof question === 'string')
 }
 
-export default async function handler(request: Request) {
+export default {
+  async fetch(request: Request) {
   if (request.method !== 'POST') {
     return json(405, { error: 'Método não permitido.' })
   }
@@ -115,4 +116,5 @@ export default async function handler(request: Request) {
     console.error('Erro ao consultar o assistente.', error instanceof Error ? error.message : 'erro desconhecido')
     return json(502, { error: 'Não foi possível conectar ao assistente agora. Tente novamente em instantes.' })
   }
+  },
 }
