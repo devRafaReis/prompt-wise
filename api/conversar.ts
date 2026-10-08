@@ -1,6 +1,6 @@
 declare const process: { env: Record<string, string | undefined> }
 
-import { extractResponseText } from './_response-text'
+import { extractResponseText } from '../src/lib/responseText'
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string }
 

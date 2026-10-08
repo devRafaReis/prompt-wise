@@ -1,5 +1,5 @@
 import type { PromptAgentFeedback } from '../src/data/promptRefiner'
-import { extractResponseText } from './_response-text'
+import { extractResponseText } from '../src/lib/responseText'
 
 declare const process: { env: Record<string, string | undefined> }
 
