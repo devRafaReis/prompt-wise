@@ -27,7 +27,7 @@ export const projectCreationEstimate = {
     value: '≈ 366 mil–610 mil tokens',
     detail: 'Faixa de ordem de grandeza para toda a criação e as revisões, somando entradas e saídas.',
   },
-  baseline: 'Nesta versão, 75 arquivos textuais de código, conteúdo e exemplos somam cerca de 488 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 122 mil tokens.',
+  baseline: 'Nesta versão, 75 arquivos textuais de código, conteúdo e exemplos somam cerca de 490 mil caracteres. A aproximação didática de quatro caracteres por unidade produz uma base próxima de 122 mil tokens.',
   expansion: 'A faixa total aplica aproximadamente três a cinco vezes essa base para representar releituras de contexto, instruções, mensagens, diffs, resultados de busca, builds e respostas produzidas durante as iterações.',
   caveat: 'O consumo real só pode ser confirmado pelos registros de uso da plataforma. Tokenização varia por modelo e conteúdo; arquivos lidos repetidamente e saídas de ferramentas também participam do contexto.',
 } as const
@@ -231,5 +231,16 @@ export const projectStories: ProjectStory[] = [
     verify: 'Publicar a correção, enviar uma pergunta simples e conferir a resposta no chat; testar também o refinador. Se a API recusar a chamada, confirmar que o servidor devolve um erro controlado sem expor resposta bruta, chave ou conteúdo do usuário.',
     lesson: 'O contrato HTTP bruto e as conveniências de um SDK não são intercambiáveis; validar o formato real da resposta evita que uma geração bem-sucedida pareça uma falha da aplicação.',
     files: ['api/_response-text.ts', 'api/conversar.ts', 'api/refinar-prompt.ts'],
+  },
+  {
+    id: 'vite-function-handler',
+    title: 'Adequar a Function ao Vite',
+    subtitle: 'Contrato request e response',
+    request: 'Investigar uma nova falha de invocação que ocorria antes de qualquer chamada externa.',
+    before: 'As rotas usavam o adaptador Web, mas o deployment Vite invocava a Function com os objetos request e response da API de Functions.',
+    after: 'Chat e refinador passaram a exportar handler(request, response), ler o corpo já processado pelo Vercel e responder com status e JSON pelo objeto response.',
+    verify: 'Publicar um novo deployment, testar o chat e o refinador e confirmar no painel que a chamada externa só ocorre depois de a Function aceitar o pedido.',
+    lesson: 'A documentação do runtime geral e a integração de um framework podem ter contratos distintos; para rotas de Vite, a referência do framework é decisiva.',
+    files: ['api/conversar.ts', 'api/refinar-prompt.ts', 'src/data/projectStory.ts'],
   },
 ]

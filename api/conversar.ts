@@ -7,15 +7,22 @@ type ChatMessage = { role: 'user' | 'assistant'; content: string }
 const maxMessageLength = 3_000
 const maxHistoryMessages = 8
 
-function json(status: number, body: unknown) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      'Cache-Control': 'no-store',
-      'Content-Type': 'application/json; charset=utf-8',
-      'X-Content-Type-Options': 'nosniff',
-    },
-  })
+type VercelRequest = {
+  method?: string
+  headers: Record<string, string | string[] | undefined>
+  body?: unknown
+}
+
+type VercelResponse = {
+  setHeader(name: string, value: string): void
+  status(status: number): VercelResponse
+  json(body: unknown): void
+}
+
+function sendJson(response: VercelResponse, status: number, body: unknown) {
+  response.setHeader('Cache-Control', 'no-store')
+  response.setHeader('X-Content-Type-Options', 'nosniff')
+  return response.status(status).json(body)
 }
 
 function isChatMessage(value: unknown): value is ChatMessage {
@@ -27,14 +34,14 @@ function isChatMessage(value: unknown): value is ChatMessage {
     && message.content.length <= maxMessageLength
 }
 
-export default {
-  async fetch(request: Request) {
+export default async function handler(request: VercelRequest, response: VercelResponse) {
+  const json = (status: number, body: unknown) => sendJson(response, status, body)
   if (request.method !== 'POST') return json(405, { error: 'Método não permitido.' })
-  if (!(request.headers.get('content-type') ?? '').includes('application/json')) return json(415, { error: 'Envie a mensagem em JSON.' })
+  if (!((Array.isArray(request.headers['content-type']) ? request.headers['content-type'][0] : request.headers['content-type']) ?? '').includes('application/json')) return json(415, { error: 'Envie a mensagem em JSON.' })
 
   let body: { message?: unknown; history?: unknown }
   try {
-    body = await request.json()
+    body = (request.body ?? {}) as { message?: unknown; history?: unknown }
   } catch {
     return json(400, { error: 'O corpo da requisição não é um JSON válido.' })
   }
@@ -83,5 +90,4 @@ export default {
     console.error('Erro ao consultar o chat.', error instanceof Error ? error.message : 'erro desconhecido')
     return json(502, { error: 'Não foi possível conectar ao assistente agora. Tente novamente em instantes.' })
   }
-  },
 }

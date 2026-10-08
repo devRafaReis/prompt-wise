@@ -17,15 +17,22 @@ const responseSchema = {
   },
 } as const
 
-function json(status: number, body: unknown) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      'Cache-Control': 'no-store',
-      'Content-Type': 'application/json; charset=utf-8',
-      'X-Content-Type-Options': 'nosniff',
-    },
-  })
+type VercelRequest = {
+  method?: string
+  headers: Record<string, string | string[] | undefined>
+  body?: unknown
+}
+
+type VercelResponse = {
+  setHeader(name: string, value: string): void
+  status(status: number): VercelResponse
+  json(body: unknown): void
+}
+
+function sendJson(response: VercelResponse, status: number, body: unknown) {
+  response.setHeader('Cache-Control', 'no-store')
+  response.setHeader('X-Content-Type-Options', 'nosniff')
+  return response.status(status).json(body)
 }
 
 function isPromptAgentFeedback(value: unknown): value is PromptAgentFeedback {
@@ -38,20 +45,21 @@ function isPromptAgentFeedback(value: unknown): value is PromptAgentFeedback {
     && feedback.perguntas.every(question => typeof question === 'string')
 }
 
-export default {
-  async fetch(request: Request) {
+export default async function handler(request: VercelRequest, response: VercelResponse) {
+  const json = (status: number, body: unknown) => sendJson(response, status, body)
   if (request.method !== 'POST') {
     return json(405, { error: 'Método não permitido.' })
   }
 
-  const contentType = request.headers.get('content-type') ?? ''
+  const requestContentType = request.headers['content-type']
+  const contentType = (Array.isArray(requestContentType) ? requestContentType[0] : requestContentType) ?? ''
   if (!contentType.includes('application/json')) {
     return json(415, { error: 'Envie o pedido em JSON.' })
   }
 
   let body: { prompt?: unknown }
   try {
-    body = await request.json()
+    body = (request.body ?? {}) as { prompt?: unknown }
   } catch {
     return json(400, { error: 'O corpo da requisição não é um JSON válido.' })
   }
@@ -118,5 +126,4 @@ export default {
     console.error('Erro ao consultar o assistente.', error instanceof Error ? error.message : 'erro desconhecido')
     return json(502, { error: 'Não foi possível conectar ao assistente agora. Tente novamente em instantes.' })
   }
-  },
 }
